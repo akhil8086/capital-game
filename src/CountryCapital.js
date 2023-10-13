@@ -1,83 +1,73 @@
 
 
+import { useState } from "react";
+import "./CountryCapital.css"
 
-import React, { useState, useEffect } from 'react';
-import './CountryCapital.css';
+function CountryCapital({data}) {
 
-const data = {
-  "India": "New Delhi",
-  "Australia" : "Canberra",
-  "Japan" : "Tokyo",
-  "Germany" : "Berlin",
-  "UAE" : "Abu Dhabi",
-};
+  const [selectedAnswer, setSelectedAnswer] = useState(null)
+  const [prevAnswer, setPrevAnswer] = useState(null)
 
-function shuffleObject(obj) {
-  const keys = Object.keys(obj);
-  const shuffledKeys = shuffleArray(keys);
-  const shuffledValues = shuffleArray(keys.map(key => obj[key]));
+  const [buttonList,setButtonList] = useState(shuffle ([...Object.keys(data), ...Object.values(data)]));
+  
 
-  return shuffledKeys.reduce((result, key, index) => {
-    result[key] = shuffledValues[index];
-    return result;
-  }, {});
-}
-
-function shuffleArray(array) {
-  return array.slice().sort(() => Math.random() - 0.5);
-}
-
-function CountryCapital() {
-  const [state, setState] = useState({
-    country: '',
-    capital: '',
-    clickedButton: null,
-    changedButton: '',
-  });
-
-   const [shuffledData, setShuffledData] = useState([]);
-
-  useEffect(() => {
-    setShuffledData(shuffleObject(data));
-  }, []);
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) { 
+      const j = Math.floor(Math.random() * (i + 1)); 
+      [array[i], array[j]] = [array[j], array[i]]; 
+    } 
+    return array; 
+  }
+   console.log(buttonList);
 
 
-  const handleClick = (selectedCountry, selectedCapital) => {
-    setState({
-      ...state,
-      country: selectedCountry,
-      capital: selectedCapital,
-      clickedButton: selectedCountry,
-      changedButton: selectedCapital,
-    });
-  };
+   const handleAnswer = (e) => {
+       const answer = e.target.value;
 
+       if(!selectedAnswer) {
+        setSelectedAnswer(answer)
+       }else {
+        if(data[selectedAnswer] === answer || data[answer] === selectedAnswer) {
+          setButtonList(buttonList.filter(b => b !== answer && b !==selectedAnswer ));
+          setSelectedAnswer(null);
+          setPrevAnswer(null);
+        } else {
+          setPrevAnswer(selectedAnswer);
+          setSelectedAnswer(answer);
 
-  return (
+          setTimeout(() => {
+            setSelectedAnswer(null);
+          setPrevAnswer(null);
+          },1000);
+        }
+       }
+   }
+
+   if (buttonList.length === 0) {
+    return<p>Congratulations</p>
+   }
+
+   return (
     <div>
-      <h1>Country Capital Game</h1>
-      {Object.entries(shuffledData).map(([key, val]) => (
-        <div className="button-container" key={key}>
-          <button
-            onClick={() => handleClick(key, null)}
-            className={state.clickedButton === key ? 'blue-button' : ''}
-          >
-            {key}
-          </button>
-          <button
-            onClick={() => handleClick(null, val)}
-            className={state.changedButton === val ? 'blue-button' : ''}
-          >
-            {val}
-          </button>
-        </div>
-      )
-      )}
+     {
+      <h1>Capital Game</h1>
+     }
+      {
+        buttonList.map((item) => {
+       return <button key={item} className={`Buttons ${selectedAnswer === item ? "selected" : ''} 
+       ${prevAnswer && (item === selectedAnswer || item === prevAnswer) ? "incorrect" : '' }`} 
+       onClick={handleAnswer} value={item}>{item}</button>
+        })
+      }
     </div>
-  );
+   )
+  
+ 
 }
 
-export default CountryCapital;
+export default CountryCapital
+
+
 
 
 

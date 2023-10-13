@@ -1,30 +1,26 @@
 
-import './App.css';
-import CountryCapital from './CountryCapital';
 
+
+import React from "react";
+import './App.css';
+import CountryCapital from "./CountryCapital";
 
 function App() {
+ 
+  const data = {
+  "India": "New Delhi",
+  "Australia" : "Canberra",
+  "Japan" : "Tokyo",
+  "Germany" : "Berlin",
+  "UAE" : "Abu Dhabi",
+};
 
-  
   return (
     <div className="App">
-    <CountryCapital />
+      <CountryCapital data={data} />
     </div>
   );
 }
 
 export default App;
 
-// import CountryCapital from "./CountryCapital";
-
-// function App() {
-//   const data = { India: "New Delhi", Australia: "Canberra", Poland: "Warsaw" }
-
-//   return (
-//     <>
-//       <CountryCapital data={data}></CountryCapital>
-//     </>
-//   );
-// }
-
-// export default App;
